@@ -300,3 +300,21 @@
 2025-10-31 12:01:11.930	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysDict/list?pageNum=1&pageSize=10"}
 2025-10-31 12:01:13.890	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysMenu/getMenuTreeList"}
 2025-10-31 12:01:13.890	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysMenu/getMenuAppTreeList"}
+2025-10-31 16:20:52.709	INFO	[dao/SysOperLogDao.go:40]	➕ 准备创建明日分区	{"partitionName": "p20251031"}
+2025-10-31 16:20:52.712	WARN	[dao/SysOperLogDao.go:45]	ℹ️ 分区已存在，跳过创建	{"partitionName": "p20251031"}
+2025-10-31 16:20:52.712	INFO	[dao/SysOperLogDao.go:40]	➕ 准备创建明日分区	{"partitionName": "p20251101"}
+2025-10-31 16:20:52.713	WARN	[dao/SysOperLogDao.go:45]	ℹ️ 分区已存在，跳过创建	{"partitionName": "p20251101"}
+2025-10-31 16:20:52.715	INFO	[cwrs_zap_logger/CwrsZapLogger.go:178]	AddTaskToScheduler 共添加了 0 个任务到调度器
+2025-10-31 16:21:13.255	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysLogin/getUserInfo"}
+2025-10-31 16:21:13.262	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysParam/dept"}
+2025-10-31 16:21:13.265	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysMenu/getMenuTreeByRoleId"}
+2025-10-31 16:21:15.649	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysMenu/getMenuTreeList"}
+2025-10-31 16:21:15.650	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysMenu/getMenuAppTreeList"}
+2025-10-31 16:21:17.579	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysDept/tree"}
+2025-10-31 16:21:19.414	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysDept/tree"}
+2025-10-31 16:21:19.419	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysRole/list?pageNum=1&pageSize=10"}
+2025-10-31 16:21:19.419	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysMenu/getMenuTreeList"}
+2025-10-31 16:21:19.419	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysDept/tree"}
+2025-10-31 16:21:19.419	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysMenu/getMenuAppTreeList"}
+2025-10-31 16:21:21.049	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysDept/tree"}
+2025-10-31 16:21:21.050	INFO	[cwrs_middleware/CwrsAuthLog.go:32]	系统日志	{"Method": "GET", "userId": "953b77a21366497094303f293cc07424", "account": "", "role": "", "url": "/api/sysUser/list?pageNum=1&pageSize=10"}
