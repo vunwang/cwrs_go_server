@@ -1,0 +1,62 @@
+# application-dev.yaml
+gin:
+  #项目所属环境:debug|release
+  mode: debug
+  #项目端口
+  port: 9091
+
+mysql:
+  path: localhost
+  #服务器端口
+  port: 3306
+  #数据库名称
+  db-name: cwrs
+  #登录用户名
+  user-name: root
+  #登录密码
+  password: root
+  #驱动名称
+  driver-name: mysql
+  #配置
+  config: charset=utf8mb4&parseTime=True&loc=Local
+
+redis:
+  port: 6379
+  path: 127.0.0.1
+  password: root
+  db: 2
+
+log:
+  # 每个日志文件保存的大小 单位:M
+  max-size: 10
+  # 保留旧文件最大个数
+  max-backups: 30
+  # 保留旧文件最大天数
+  max-age: 60
+  # 是否压缩/归档旧文件
+  compress: false
+  # 数据库中操作日志保留天数
+  keep-days: 60
+
+ip:
+  # ip地址 局域网段
+  addr: 192.168.10.
+
+oss:
+  dir: ["videos", "photos"]
+
+#mqtt:
+#  #服务器地址
+#  path: 127.0.0.1
+#  #端口
+#  port: 1883
+#  clientId: DEV
+#  user-name: dev
+#  password: 123456
+
+#aliYun:
+#  bucket:
+#  regionId:
+#  endPoint:
+#  accessKeyId:
+#  accessKeySecret:

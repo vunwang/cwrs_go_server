@@ -1,0 +1,105 @@
+package controller
+
+import (
+    "cwrs_go_server/src/cwrs_common/cwrs_res"
+    "cwrs_go_server/src/server/{{.Pkg}}/pojo"
+    "cwrs_go_server/src/server/{{.Pkg}}/service"
+    "github.com/gin-gonic/gin"
+)
+
+var {{.ServiceVarName}} = service.{{.ServiceStructName}}{}
+
+// @Tags {{.Comment}}管理【平台】
+// @Summary 新增{{.Comment}}
+// @Description 新增{{.Comment}}
+// @Accept json
+// @Produce json
+// @Param Token header string true "token"
+// @Param req body pojo.Add{{.StructName}}Req true "新增参数"
+// @Success 200 {object} cwrs_res.ResSuccess "操作成功"
+// @Failure 422 {object} cwrs_res.ResError "操作失败"
+// @Router /{{.StructNameLower}}/add [post]
+func Add{{.StructName}}(c *gin.Context) {
+    var req pojo.Add{{.StructName}}Req
+    if err := c.ShouldBindJSON(&req); err != nil {
+        cwrs_res.Parameter(c, err, "参数错误！")
+        return
+    }
+    {{.ServiceVarName}}.Add{{.StructName}}(c, &req)
+}
+
+// @Tags {{.Comment}}管理【平台】
+// @Summary 修改{{.Comment}}
+// @Description 修改{{.Comment}}
+// @Accept json
+// @Produce json
+// @Param Token header string true "token"
+// @Param req body pojo.Edit{{.StructName}}Req true "修改参数"
+// @Success 200 {object} cwrs_res.ResSuccess "操作成功"
+// @Failure 422 {object} cwrs_res.ResError "操作失败"
+// @Router /{{.StructNameLower}}/edit [put]
+func Edit{{.StructName}}(c *gin.Context) {
+    var req pojo.Edit{{.StructName}}Req
+    if err := c.ShouldBindJSON(&req); err != nil {
+        cwrs_res.Parameter(c, err, "参数错误！")
+        return
+    }
+    {{.ServiceVarName}}.Edit{{.StructName}}(c, &req)
+}
+
+// @Tags {{.Comment}}管理【平台】
+// @Summary 删除{{.Comment}}
+// @Description 删除{{.Comment}}
+// @Accept json
+// @Produce json
+// @Param Token header string true "token"
+// @Param req query pojo.Del{{.StructName}}Req true "删除参数"
+// @Success 200 {object} cwrs_res.ResSuccess "操作成功"
+// @Failure 422 {object} cwrs_res.ResError "操作失败"
+// @Router /{{.StructNameLower}}/del [delete]
+func Del{{.StructName}}(c *gin.Context) {
+    var req pojo.Del{{.StructName}}Req
+    if err := c.ShouldBindQuery(&req); err != nil {
+        cwrs_res.Parameter(c, err, "参数错误！")
+        return
+    }
+    {{.ServiceVarName}}.Del{{.StructName}}(c, &req)
+}
+
+// @Tags {{.Comment}}管理【平台】
+// @Summary 查询{{.Comment}}详情
+// @Description 根据主键查询{{.Comment}}详情
+// @Accept json
+// @Produce json
+// @Param Token header string true "token"
+// @Param req query pojo.Get{{.StructName}}DetailReq true "查询详情参数"
+// @Success 200 {object} cwrs_res.ResSuccessData{data=pojo.{{.StructName}}Resp} "操作成功"
+// @Failure 422 {object} cwrs_res.ResError "操作失败"
+// @Router /{{.StructNameLower}}/detail [get]
+func Get{{.StructName}}Detail(c *gin.Context) {
+    var req pojo.Get{{.StructName}}DetailReq
+    if err := c.ShouldBindQuery(&req); err != nil {
+        cwrs_res.Parameter(c, err, "参数错误！")
+        return
+    }
+    {{.ServiceVarName}}.Get{{.StructName}}Detail(c, &req)
+}
+
+// @Tags {{.Comment}}管理【平台】
+// @Summary 分页查询{{.Comment}}列表
+// @Description 分页查询{{.Comment}}列表
+// @Accept json
+// @Produce json
+// @Param Token header string true "token"
+// @Param req query pojo.Get{{.StructName}}ListReq true "分页查询参数"
+// @Success 200 {object} cwrs_res.ResSuccessDataList{data=[]pojo.{{.StructName}}Resp} "操作成功"
+// @Failure 422 {object} cwrs_res.ResError "操作失败"
+// @Router /{{.StructNameLower}}/list [get]
+func Get{{.StructName}}List(c *gin.Context) {
+    var req pojo.Get{{.StructName}}ListReq
+    if err := c.ShouldBindQuery(&req); err != nil {
+        cwrs_res.Parameter(c, err, "参数错误！")
+        return
+    }
+    {{.ServiceVarName}}.Get{{.StructName}}List(c, &req)
+}

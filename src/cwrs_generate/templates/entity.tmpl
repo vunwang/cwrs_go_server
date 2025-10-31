@@ -1,0 +1,44 @@
+package pojo
+
+type {{.StructName}} struct {
+{{range .Columns}}    {{.GoName}} {{.GoType}} `gorm:"column:{{.ColumnName}}" json:"{{.JsonTag}}"` // {{.Comment}}
+{{end}}}
+
+type {{.StructName}}Resp struct {
+{{range .Columns}}    {{if and (ne .GoName "UpdatedUserId") (ne .GoName "UpdatedTime")}}    {{.GoName}} {{.GoType}} `gorm:"column:{{.ColumnName}}" json:"{{.JsonTag}}"` // {{.Comment}}
+{{end}}{{end}}DeptName        string              `gorm:"column:dept_name" json:"deptName"` // 所属组织名称
+CreatedUserName string              `gorm:"column:created_user_name" json:"createdUserName"` // 创建用户名称
+}
+
+// Add{{.StructName}}Req 新增{{.Comment}}入参
+type Add{{.StructName}}Req struct {
+{{range .Columns}}    {{if and (ne .GoName "CreatedUserId") (ne .GoName "CreatedTime") (ne .GoName "UpdatedUserId") (ne .GoName "UpdatedTime")}} {{if not .IsPrimaryKey}}{{if .IsRequired}}    {{.GoName}} {{.GoType}} `form:"{{.JsonTag}}" json:"{{.JsonTag}}" binding:"required"` // {{.Comment}}
+{{else}}    {{.GoName}} {{.GoType}} `form:"{{.JsonTag}}" json:"{{.JsonTag}}"` // {{.Comment}}
+{{end}}{{end}}{{end}}{{end}}}
+
+// Edit{{.StructName}}Req 编辑{{.Comment}}入参
+type Edit{{.StructName}}Req struct {
+{{range .Columns}}    {{if and (ne .GoName "CreatedUserId") (ne .GoName "CreatedTime") (ne .GoName "UpdatedUserId") (ne .GoName "UpdatedTime")}}{{if .IsPrimaryKey}}    {{.GoName}} {{.GoType}} `form:"{{.JsonTag}}" json:"{{.JsonTag}}" binding:"required"` // {{.Comment}}
+{{else}}{{if .IsRequired}}    {{.GoName}} {{.GoType}} `form:"{{.JsonTag}}" json:"{{.JsonTag}}" binding:"required"` // {{.Comment}}
+{{else}}    {{.GoName}} {{.GoType}} `form:"{{.JsonTag}}" json:"{{.JsonTag}}"` // {{.Comment}}
+{{end}}{{end}}{{end}}{{end}}}
+
+// Del{{.StructName}}Req 删除{{.Comment}}入参
+type Del{{.StructName}}Req struct {
+    {{.PrimaryKey.GoName}}s string `form:"{{.PrimaryKey.JsonTag}}s" json:"{{.PrimaryKey.JsonTag}}s" binding:"required"` //id 多个英文逗号分隔
+}
+
+// Get{{.StructName}}DetailReq 查询详情入参
+type Get{{.StructName}}DetailReq struct {
+    {{.PrimaryKey.GoName}} string `form:"{{.PrimaryKey.JsonTag}}" json:"{{.PrimaryKey.JsonTag}}" binding:"required"` //id
+}
+
+// Get{{.StructName}}ListReq 分页查询入参
+type Get{{.StructName}}ListReq struct {
+    PageNum         int `form:"pageNum" json:"pageNum"`                    // 页码
+    PageSize        int `form:"pageSize" json:"pageSize"`                  // 每页显示条数
+    DeptId          string `form:"deptId" json:"deptId"`                   // 所属组织
+    CreatedUserName string `form:"createdUserName" json:"createdUserName"` // 创建用户名称
+    StartTime       string `form:"startTime" json:"startTime"`             // 创建时间开始
+    EndTime         string `form:"endTime" json:"endTime"`                 // 创建时间结束
+}

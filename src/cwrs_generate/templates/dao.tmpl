@@ -1,0 +1,107 @@
+package dao
+
+import (
+    "cwrs_go_server/src/cwrs_core/cwrs_gorm"
+    "cwrs_go_server/src/cwrs_core/cwrs_zap_logger"
+    "cwrs_go_server/src/cwrs_utils"
+    "cwrs_go_server/src/server/{{.Pkg}}/pojo"
+    "github.com/gin-gonic/gin"
+    "go.uber.org/zap"
+)
+
+var {{.StructNameLower}}Log = cwrs_zap_logger.ZapLogger
+const table{{.StructName}} = "{{.TableName}}"
+const tableSel{{.StructName}} = "{{.TableName}} {{.TableSelName}}"
+
+type {{.DaoStructName}} struct{}
+
+// Add{{.StructName}} 添加{{.Comment}}
+func (*{{.DaoStructName}}) Add{{.StructName}}(item *pojo.{{.StructName}}) error {
+    fields := make([]string, 0)
+    {{range .Columns}}    {{if and (ne .GoName "CreatedUserId") (ne .GoName "CreatedTime") (ne .GoName "UpdatedUserId") (ne .GoName "UpdatedTime")}} {{if and (not .IsPrimaryKey) (or (eq .GoType "string") (eq .GoType "int"))}}    if item.{{.GoName}} != {{if eq .GoType "string"}}""{{else}}0{{end}} {
+        fields = append(fields, "{{.ColumnName}}")
+    }
+    {{end}}{{end}}{{end}}    fields = append(fields, "{{.PrimaryKey.ColumnName}}", "created_user_id", "created_time")
+    if err := cwrs_gorm.GormDb.Table(table{{.StructName}}).Select(fields).Create(&item).Error; err != nil {
+        {{.StructNameLower}}Log.Error("Add{{.StructName}} Error", zap.Error(err))
+        return err
+    }
+    return nil
+}
+
+// Edit{{.StructName}} 修改{{.Comment}}
+func (*{{.DaoStructName}}) Edit{{.StructName}}(item *pojo.{{.StructName}}) error {
+    fields := make([]string, 0)
+    {{range .Columns}}
+    {{if and (ne .GoName "CreatedUserId") (ne .GoName "CreatedTime") (ne .GoName "UpdatedUserId") (ne .GoName "UpdatedTime")}}
+        {{if not .IsPrimaryKey}} {{if .IsRequired}} {{if eq .GoType "string"}} if item.{{.GoName}} != "" {
+            fields = append(fields, "{{.ColumnName}}")
+        } {{else if or (eq .GoType "int") (eq .GoType "int64") (eq .GoType "uint") (eq .GoType "bool")}} if item.{{.GoName}} != 0 {
+            fields = append(fields, "{{.ColumnName}}")
+        } {{else if eq .GoType "*time.Time"}}
+        if item.{{.GoName}} != nil {
+            fields = append(fields, "{{.ColumnName}}")
+        } {{else}} if item.{{.GoName}} != nil {
+            fields = append(fields, "{{.ColumnName}}")
+        } {{end}} {{else}} fields = append(fields, "{{.ColumnName}}") {{end}} {{end}} {{end}} {{end}}
+    fields = append(fields, "updated_user_id", "updated_time")
+    if err := cwrs_gorm.GormDb.Table(table{{.StructName}}).Select(fields).
+        Where("{{.PrimaryKey.ColumnName}} = ?", item.{{.PrimaryKey.GoName}}).Updates(&item).Error; err != nil {
+        {{.StructNameLower}}Log.Error("Edit{{.StructName}} Error", zap.Error(err))
+        return err
+    }
+    return nil
+}
+
+// Del{{.StructName}} 删除{{.Comment}}
+func (*{{.DaoStructName}}) Del{{.StructName}}({{.PrimaryKey.GoNameLower}}s []string) error {
+    if err := cwrs_gorm.GormDb.Table(table{{.StructName}}).
+        Where("{{.PrimaryKey.ColumnName}} IN (?)", {{.PrimaryKey.GoNameLower}}s).Delete(&pojo.{{.StructName}}{}).Error; err != nil {
+        {{.StructNameLower}}Log.Error("Del{{.StructName}} Error", zap.Error(err))
+        return err
+    }
+    return nil
+}
+
+// Get{{.StructName}}ById 查询{{.Comment}}详情
+func (*{{.DaoStructName}}) Get{{.StructName}}ById({{.PrimaryKey.GoNameLower}} string) (*pojo.{{.StructName}}Resp, error) {
+    var item pojo.{{.StructName}}Resp
+    if err := cwrs_gorm.GormDb.Table(tableSel{{.StructName}}).
+        Select({{range $index, $col := .Columns}}{{if and (ne $col.GoName "UpdatedUserId") (ne $col.GoName "UpdatedTime")}}{{if $index}}, {{end}}"{{$col.TableSelName}}.{{$col.ColumnName}}"{{end}}{{end}},"sd.dept_name","su.user_name as created_user_name").
+        Joins("LEFT JOIN sys_dept sd ON {{.TableSelName}}.dept_id = sd.dept_id").
+        Joins("LEFT JOIN sys_user su ON {{.TableSelName}}.created_user_id = su.user_id").
+        Where("{{.TableSelName}}.{{.PrimaryKey.ColumnName}} = ?", {{.PrimaryKey.GoNameLower}}).First(&item).Error; err != nil {
+        {{.StructNameLower}}Log.Error("Get{{.StructName}}ById Error", zap.Error(err))
+        return nil, err
+    }
+    return &item, nil
+}
+
+// Get{{.StructName}}List 分页查询{{.Comment}}列表
+func (*{{.DaoStructName}}) Get{{.StructName}}List(c *gin.Context, req *pojo.Get{{.StructName}}ListReq) ([]pojo.{{.StructName}}Resp, int64, error) {
+    var list []pojo.{{.StructName}}Resp
+    var total int64
+    db := cwrs_gorm.GormDb.Table(tableSel{{.StructName}}).Scopes(cwrs_gorm.WithDataScope(c)).
+        Select({{range $index, $col := .Columns}}{{if and (ne $col.GoName "UpdatedUserId") (ne $col.GoName "UpdatedTime")}}{{if $index}}, {{end}}"{{$col.TableSelName}}.{{$col.ColumnName}}"{{end}}{{end}},"sd.dept_name","su.user_name as created_user_name").
+                Joins("LEFT JOIN sys_dept sd ON {{.TableSelName}}.dept_id = sd.dept_id").
+                Joins("LEFT JOIN sys_user su ON {{.TableSelName}}.created_user_id = su.user_id")
+    if req.DeptId != "" {
+		db = db.Where("{{.TableSelName}}.dept_id = ?", req.DeptId)
+	}
+	if req.CreatedUserName != "" {
+		db = db.Where("su.user_name LIKE ?", "%"+req.CreatedUserName+"%")
+	}
+	if req.StartTime != "" && req.EndTime != "" {
+		db = db.Where("{{.TableSelName}}.created_time BETWEEN ? AND ?", req.StartTime, req.EndTime)
+	}
+    db.Count(&total)
+    if req.PageNum > 0 && req.PageSize > 0 {
+        offset := cwrs_utils.CalcOffset(req.PageNum, req.PageSize)
+        db = db.Offset(offset).Limit(req.PageSize)
+    }
+    if err := db.Find(&list).Error; err != nil {
+        {{.StructNameLower}}Log.Error("Get{{.StructName}}List Error", zap.Error(err))
+        return nil, 0, err
+    }
+    return list, total, nil
+}

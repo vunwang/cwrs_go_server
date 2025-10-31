@@ -1,0 +1,3 @@
+# application.yaml
+app:
+  active-profile: dev  # 可改为 "dev|prod"

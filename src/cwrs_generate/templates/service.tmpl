@@ -1,0 +1,71 @@
+package service
+
+import (
+    "cwrs_go_server/src/cwrs_common/cwrs_res"
+    "cwrs_go_server/src/cwrs_utils"
+    "cwrs_go_server/src/server/{{.Pkg}}/dao"
+    "cwrs_go_server/src/server/{{.Pkg}}/pojo"
+    "github.com/gin-gonic/gin"
+    "strings"
+)
+
+var {{.DaoVarName}} = dao.{{.DaoStructName}}{}
+
+type {{.ServiceStructName}} struct{}
+
+// Add{{.StructName}} 新增{{.Comment}}
+func (*{{.ServiceStructName}}) Add{{.StructName}}(c *gin.Context, req *pojo.Add{{.StructName}}Req) {
+    var entity pojo.{{.StructName}}
+    cwrs_utils.CopyStruct(req, &entity, "json")
+    entity.{{.PrimaryKey.GoName}} = cwrs_utils.CreateUuid()
+    entity.CreatedUserId = cwrs_utils.GetLoginUserInfo(c).UserId
+    entity.CreatedTime = cwrs_utils.GetNowDateTime()
+    if err := {{.DaoVarName}}.Add{{.StructName}}(&entity); err != nil {
+        cwrs_res.Waring(c, err, "新增{{.Comment}}失败")
+        return
+    }
+    cwrs_res.Success(c, "操作成功")
+}
+
+// Edit{{.StructName}} 修改{{.Comment}}
+func (*{{.ServiceStructName}}) Edit{{.StructName}}(c *gin.Context, req *pojo.Edit{{.StructName}}Req) {
+    var entity pojo.{{.StructName}}
+    cwrs_utils.CopyStruct(req, &entity, "json")
+    entity.UpdatedUserId = cwrs_utils.GetLoginUserInfo(c).UserId
+    entity.UpdatedTime = cwrs_utils.GetNowDateTime()
+    if err := {{.DaoVarName}}.Edit{{.StructName}}(&entity); err != nil {
+        cwrs_res.Waring(c, err, "修改{{.Comment}}失败")
+        return
+    }
+    cwrs_res.Success(c, "操作成功")
+}
+
+// Del{{.StructName}} 删除{{.Comment}}
+func (*{{.ServiceStructName}}) Del{{.StructName}}(c *gin.Context, req *pojo.Del{{.StructName}}Req) {
+    {{.PrimaryKey.JsonTag}}s := strings.Split(req.{{.PrimaryKey.GoName}}s, ",")
+    if err := {{.DaoVarName}}.Del{{.StructName}}({{.PrimaryKey.JsonTag}}s); err != nil {
+        cwrs_res.Waring(c, err, "删除{{.Comment}}失败")
+        return
+    }
+    cwrs_res.Success(c, "操作成功")
+}
+
+// Get{{.StructName}}Detail 查询{{.Comment}}详情
+func (*{{.ServiceStructName}}) Get{{.StructName}}Detail(c *gin.Context, req *pojo.Get{{.StructName}}DetailReq) {
+    item, err := {{.DaoVarName}}.Get{{.StructName}}ById(req.{{.PrimaryKey.GoName}})
+    if err != nil {
+        cwrs_res.Waring(c, err, "查询{{.Comment}}详情失败")
+        return
+    }
+    cwrs_res.SuccessData(c, "操作成功", item)
+}
+
+// Get{{.StructName}}List 分页查询{{.Comment}}列表
+func (*{{.ServiceStructName}}) Get{{.StructName}}List(c *gin.Context, req *pojo.Get{{.StructName}}ListReq) {
+    list, total, err := {{.DaoVarName}}.Get{{.StructName}}List(c, req)
+    if err != nil {
+        cwrs_res.Waring(c, err, "查询{{.Comment}}列表失败")
+        return
+    }
+    cwrs_res.SuccessDataList(c, "操作成功", list, total)
+}
